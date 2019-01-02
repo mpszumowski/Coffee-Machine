@@ -1,9 +1,8 @@
 from abc import ABCMeta, abstractmethod
 
 
-class AbcCoffee(object):
-    __metaclass__ = ABCMeta
-
+class AbcCoffee(metaclass=ABCMeta):
+    @property
     @abstractmethod
     def coffee_amount(self):
         raise NotImplementedError

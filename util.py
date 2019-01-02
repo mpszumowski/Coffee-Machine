@@ -1,0 +1,2 @@
+class RefillableContainer(object):
+    pass

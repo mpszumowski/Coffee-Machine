@@ -1,11 +1,14 @@
 from inspect import getmembers, isclass, isabstract
+
 import coffees
+from dregs_container import DregsContainer
 
 
 class CoffeeMachine(object):
     coffee_programs = {}  # TODO: add typing - key: str, val: class
 
     def __init__(self):
+        self.dregs = DregsContainer()
         self.is_ready()  # TODO: check if machine is ready
         self._load_coffee_programs()
 
@@ -19,5 +22,5 @@ class CoffeeMachine(object):
     def is_ready(self):
         # TODO: check water
         # TODO: check grains
-        # TODO: check dregs container
-        pass
+        return all((isinstance(self.dregs, DregsContainer),
+                    ))

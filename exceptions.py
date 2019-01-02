@@ -4,3 +4,7 @@ class CoffeeMachineException(Exception):
 
 class DregsContainerException(CoffeeMachineException):
     pass
+
+
+class WaterTankException(CoffeeMachineException):
+    pass

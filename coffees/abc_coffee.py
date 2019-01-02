@@ -5,16 +5,13 @@ class AbcCoffee(object):
     __metaclass__ = ABCMeta
 
     @abstractmethod
-    @property
     def coffee_amount(self):
-        pass
+        raise NotImplementedError
 
-    @abstractmethod
     @property
     def milk_amount(self):
-        pass
+        return 0
 
-    @abstractmethod
     @property
     def water_amount(self):
-        pass
+        return 0

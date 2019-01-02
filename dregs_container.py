@@ -5,7 +5,7 @@ class DregsContainer(object):
     warning_level = 0.5  # TODO: consider taking from settings
     error_level = 0.9
 
-    def __init__(self, max_volume=500):
+    def __init__(self, max_volume):
         self.max_volume = max_volume
         self._level = 0
 

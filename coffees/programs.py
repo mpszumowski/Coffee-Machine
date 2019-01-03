@@ -1,29 +1,29 @@
 from .abc_coffee import AbcCoffeeProgram
+from .ingredients import Coffee, Milk
 
 
 class Cappuccino(AbcCoffeeProgram):
-    coffee_amount = 30
-    milk_amount = 60
-
+    coffee = Coffee(units=1)
+    milk = Milk(60)
+    
 
 class Doppio(AbcCoffeeProgram):
-    coffee_amount = 60
+    coffee = Coffee(units=2)
 
 
 class Espresso(AbcCoffeeProgram):
-    coffee_amount = 30
+    coffee = Coffee(units=1)
 
 
 class Latte(AbcCoffeeProgram):
-    coffee_amount = 30
-    milk_amount = 220
+    coffee = Coffee(units=1)
+    milk = Milk(220)
 
 
 class Lungo(AbcCoffeeProgram):
-    coffee_amount = 30
-    water_amount = 120
+    coffee = Coffee(units=1, additional_water=90)
 
 
 class Macchiato(AbcCoffeeProgram):
-    coffee_amount = 30
-    milk_amount = 30
+    coffee = Coffee(units=1)
+    milk = Milk(30)

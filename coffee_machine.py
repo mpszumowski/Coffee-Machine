@@ -48,25 +48,22 @@ class CoffeeMachine(object):
         coffee_program = self.coffee_programs.get(program)
         if coffee_program is None:
             raise CoffeeMachineException(
-                "{} program has not been found. Most probably it has not been programmed.".format(program))
-        """
-        - coffee program has information about a) order of ingredients; b) amount of each ingredient
-        - each ingredient requires a component linked with CoffeeMachine
-            * coffee - grinder, dregs_container
-            * milk - milk_pump
-            * water - water_supply
-                grinded_coffee = self.grinder.get_coffee(coffee_ingredient.amount / 2, num_espresso_units)  # espresso ratio 1 g coffee : 2 ml of water
-                water = self.water_supply.get_water(coffee_ingredient.amount)
-                self.extract_coffee(grinded_coffee, water)
-                self.dregs_container.store(grinded_coffee)
-                ###
-                milk = self.milk_pump.get_milk(milk_ingredient.amount)
-                self.add_coffee(milk)
-                ###
-                water = self.water_supply.get_water(water_ingredient.amount)
-                self.add_water(water)
-        - 
-        """
+                '"{}" program has not been found. Most probably it has not been programmed.'.format(program))
+    """
+    def add_coffee(self, amount, num_espresso_units):
+        grinded_coffee = self.grinder.grind(amount / 2, num_espresso_units)  # espresso ratio 1 g coffee : 2 ml of water
+        water = self.water_supply.get_water(amount)
+        self.brewer.extract_coffee(grinded_coffee, water)
+        self.dregs.store(grinded_coffee)
+
+    def add_milk(self, amount):
+        milk = self.milk_pump.get_milk(amount)
+        self.add_coffee(milk)
+
+    def add_water(self, amount):
+        water = self.water_supply.get_water(amount)
+        self.add_water(water)
+    """
 
     def is_ready(self):
         return all(

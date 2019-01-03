@@ -50,7 +50,7 @@ class CoffeeMachine(object):
         classes = getmembers(coffees,
                              lambda c: isclass(c) and not isabstract(c))
         for name, klass in classes:
-            if isclass(klass) and issubclass(klass, coffees.AbcCoffee):
+            if isclass(klass) and issubclass(klass, coffees.AbcCoffeeProgram):
                 self.coffee_programs.update({name: klass})
 
     def prepare(self, program):

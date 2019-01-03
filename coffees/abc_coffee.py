@@ -1,16 +1,12 @@
 from abc import ABCMeta, abstractmethod
 
 
-class AbcCoffee(metaclass=ABCMeta):
+class AbcCoffeeProgram(metaclass=ABCMeta):
     @property
     @abstractmethod
-    def coffee_amount(self):
+    def coffee(self):
         raise NotImplementedError
 
     @property
-    def milk_amount(self):
-        return 0
-
-    @property
-    def water_amount(self):
+    def milk(self):
         return 0

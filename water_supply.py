@@ -1,5 +1,6 @@
 from abc import ABCMeta
 
+from config import get_config
 from exceptions import WaterTankException
 
 
@@ -16,11 +17,12 @@ class WaterLine(WaterSupply):
 
 
 class WaterTank(WaterSupply):
-    warning_level = 0.2  # TODO: consider taking from settings
 
-    def __init__(self, volume, level):
+    def __init__(self, volume):
+        config = get_config()
+        self.warning_level = config['WaterTank']['warning_level']
         self.volume = volume
-        self._level = level
+        self._level = 0
 
     @property
     def level(self):

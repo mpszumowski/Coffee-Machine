@@ -1,12 +1,15 @@
+from config import get_config, get_params
 from exceptions import DregsContainerException
 
 
 class DregsContainer(object):
-    warning_level = 0.5  # TODO: consider taking from settings
-    error_level = 0.9
 
-    def __init__(self, max_volume):
-        self.max_volume = max_volume
+    def __init__(self):
+        config = get_config()
+        params = get_params()
+        self.warning_level = config['DregsContainer']['warning_level']
+        self.error_level = params['DregsContainer']['error_level']
+        self.max_volume = params['DregsContainer']['size']
         self._level = 0
 
     @property

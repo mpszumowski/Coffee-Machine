@@ -1,0 +1,15 @@
+{
+  "espresso_unit": {
+    "coffee_grams": 15,
+    "ratio_coffee2water": 0.5
+  },
+  "dregs_container": {
+    "warning_level": 0.5
+  },
+  "water_tank": {
+    "warning_level": 0.2
+  },
+  "grinder": {
+    "warning_level": 0.2
+  }
+}

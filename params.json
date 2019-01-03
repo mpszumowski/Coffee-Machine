@@ -1,0 +1,13 @@
+{
+  "CoffeeMachine": {
+    "version": 0.1,
+    "model": "Mark II"
+  },
+  "DregsContainer": {
+    "size": 500,
+    "error_level": 0.9
+  },
+  "CoffeeGrinder": {
+    "size": 1000
+  }
+}

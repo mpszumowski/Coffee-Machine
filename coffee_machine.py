@@ -1,15 +1,20 @@
 from inspect import getmembers, isclass, isabstract
 
 import coffees
+from config import get_params, get_config
 from dregs_container import DregsContainer
 from exceptions import CoffeeMachineException
 from water_supply import WaterSupply
 
 
 class CoffeeGrinder(object):
-    def __init__(self, capacity, level):
-        self.capacity = capacity
-        self._level = level
+
+    def __init__(self):
+        config = get_config()
+        params = get_params()
+        self.warning_level = config['CoffeeGrinder']['warning_level']
+        self.capacity = params['CoffeeGrinder']['size']
+        self._level = 0
 
     @property
     def level(self):
@@ -31,9 +36,13 @@ class CoffeeMachine(object):
     coffee_programs = {}  # TODO: add typing - key: str, val: class
 
     def __init__(self, water_supply):
+        params = get_params()
+        __version__ = params['CoffeeMachine']['version']
+        __model__ = params['CoffeeMachine']['model']
+
         self.water_supply = water_supply()
-        self.dregs = DregsContainer(500)  # TODO: get from settings
-        self.grinder = CoffeeGrinder(1000, 1000)  # TODO: get from settings
+        self.dregs = DregsContainer()
+        self.grinder = CoffeeGrinder()
         self.is_ready()
         self._load_coffee_programs()
 

@@ -1,8 +1,9 @@
+from inspect import getmembers, isclass, isabstract
+
 from coffee_machine import coffees
+from coffee_machine.components import WaterSupply, DregsContainer, CoffeeGrinder, Brewer, MilkPump
 from coffee_machine.config import get_params
 from coffee_machine.exceptions import CoffeeMachineException
-from coffee_machine.util import get_coffee_programs
-from coffee_machine.components import WaterSupply, DregsContainer, CoffeeGrinder, Brewer, MilkPump
 
 
 class CoffeeMachine(object):
@@ -26,8 +27,11 @@ class CoffeeMachine(object):
         }
 
     def _load_coffee_programs(self):
-        for name, klass in get_coffee_programs():
-            self.coffee_programs.update({name: klass})
+        classes = getmembers(coffees,
+                             lambda c: isclass(c) and not isabstract(c))
+        for name, klass in classes:
+            if isclass(klass) and issubclass(klass, coffees.AbcCoffeeProgram):
+                self.coffee_programs.update({name: klass})
 
     def supply_milk(self):
         self.milk_pump.supply_milk()

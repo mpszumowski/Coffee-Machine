@@ -112,23 +112,7 @@ class CoffeeMachine(object):
         self.dregs.store(grinded_coffee)
 
     def add_milk(self, milk: coffees.Milk):
-        pass
-
-    """
-    def add_coffee(self, amount, num_espresso_units):
-        grinded_coffee = self.grinder.grind(amount / 2, num_espresso_units)  # espresso ratio 1 g coffee : 2 ml of water
-        water = self.water_supply.get_water(amount)
-        self.brewer.extract_coffee(grinded_coffee, water)
-        self.dregs.store(grinded_coffee)
-
-    def add_milk(self, amount):
-        milk = self.milk_pump.get_milk(amount)
-        self.add_coffee(milk)
-
-    def add_water(self, amount):
-        water = self.water_supply.get_water(amount)
-        self.add_water(water)
-    """
+        milk = self.milk_pump.get_milk(milk.amount)
 
     def is_ready(self):
         return all(

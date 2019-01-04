@@ -32,6 +32,14 @@ class CoffeeGrinder(object):
         return amount
 
 
+class Brewer(object):
+
+    @staticmethod
+    def extract_coffee(grinded_coffee, water):
+        coffee = water
+        return coffee
+
+
 class CoffeeMachine(object):
 
     def __init__(self, water_supply):
@@ -42,6 +50,7 @@ class CoffeeMachine(object):
         self.water_supply = water_supply()
         self.dregs = DregsContainer()
         self.grinder = CoffeeGrinder()
+        self.brewer = Brewer()
         self.is_ready()
         self.coffee_programs = {}  # TODO: add typing - key: str, val: class
         self._load_coffee_programs()
@@ -100,5 +109,6 @@ class CoffeeMachine(object):
         return all(
             (isinstance(self.grinder, CoffeeGrinder),
              isinstance(self.water_supply, WaterSupply),
-             isinstance(self.dregs, DregsContainer))
+             isinstance(self.dregs, DregsContainer),
+             isinstance(self.brewer, Brewer))
         )

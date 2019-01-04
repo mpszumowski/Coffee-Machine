@@ -84,7 +84,10 @@ class CoffeeMachine(object):
             step(ingredient)
 
     def add_coffee(self, coffee: coffees.Coffee):
-        pass
+        grinded_coffee = self.grinder.grind(coffee.grains)
+        water = self.water_supply.get_water(coffee.water)
+        self.brewer.extract_coffee(grinded_coffee, water)
+        self.dregs.store(grinded_coffee)
 
     def add_milk(self, milk: coffees.Milk):
         pass

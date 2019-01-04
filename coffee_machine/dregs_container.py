@@ -1,5 +1,5 @@
-from config import get_config, get_params
-from exceptions import DregsContainerException
+from coffee_machine.config import get_config, get_params
+from coffee_machine.exceptions import DregsContainerException
 
 
 class DregsContainer(object):

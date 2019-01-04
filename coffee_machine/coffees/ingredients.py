@@ -1,4 +1,4 @@
-from config import get_config
+from coffee_machine.config import get_config
 
 
 class Ingredient(object):

@@ -1,7 +1,7 @@
 from abc import ABCMeta
 
-from config import get_config
-from exceptions import WaterTankException
+from coffee_machine.config import get_config
+from coffee_machine.exceptions import WaterTankException
 
 
 class WaterSupply(metaclass=ABCMeta):

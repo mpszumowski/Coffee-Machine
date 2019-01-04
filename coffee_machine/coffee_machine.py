@@ -1,10 +1,10 @@
 from inspect import getmembers, isclass, isabstract
 
-import coffees
-from config import get_params, get_config
-from dregs_container import DregsContainer
-from exceptions import CoffeeMachineException
-from water_supply import WaterSupply
+from coffee_machine import coffees
+from coffee_machine.config import get_params, get_config
+from coffee_machine.dregs_container import DregsContainer
+from coffee_machine.exceptions import CoffeeMachineException
+from coffee_machine.water_supply import WaterSupply
 
 
 class CoffeeGrinder(object):

@@ -35,9 +35,27 @@ class CoffeeGrinder(object):
 class Brewer(object):
 
     @staticmethod
-    def extract_coffee(grinded_coffee, water):
-        coffee = water
+    def extract_coffee(grinded_coffee_amount, water_amount):
+        """This method symbolises coffee extraction"""
+        coffee = water_amount
         return coffee
+
+
+class MilkPump(object):
+
+    def __init__(self):
+        self.milk_supply = None
+
+    def supply_milk(self):
+        self.milk_supply = True
+
+    def get_milk(self, milk_amount):
+        """Symbolic milk getter. In most coffee machines, the milk pump does not know if you supply milk.
+        It either pumps it or returns nothing."""
+        milk = 0
+        if self.milk_supply:
+            milk = milk_amount
+        return milk
 
 
 class CoffeeMachine(object):
@@ -51,6 +69,7 @@ class CoffeeMachine(object):
         self.dregs = DregsContainer()
         self.grinder = CoffeeGrinder()
         self.brewer = Brewer()
+        self.milk_pump = MilkPump()
         self.is_ready()
         self.coffee_programs = {}  # TODO: add typing - key: str, val: class
         self._load_coffee_programs()
@@ -65,6 +84,9 @@ class CoffeeMachine(object):
         for name, klass in classes:
             if isclass(klass) and issubclass(klass, coffees.AbcCoffeeProgram):
                 self.coffee_programs.update({name: klass})
+
+    def supply_milk(self):
+        self.milk_pump.supply_milk()
 
     def prepare(self, program):
         coffee_program = self.coffee_programs.get(program)
@@ -113,5 +135,6 @@ class CoffeeMachine(object):
             (isinstance(self.grinder, CoffeeGrinder),
              isinstance(self.water_supply, WaterSupply),
              isinstance(self.dregs, DregsContainer),
-             isinstance(self.brewer, Brewer))
+             isinstance(self.brewer, Brewer),
+             isinstance(self.milk_pump, MilkPump))
         )

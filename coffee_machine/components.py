@@ -10,6 +10,9 @@ class RefillableContainer(object):
 
 class WaterSupply(metaclass=ABCMeta):
 
+    def __init__(self):
+        print('Water supply connected...')
+
     def get_water(self, amount):
         raise NotImplementedError
 
@@ -27,6 +30,7 @@ class WaterTank(WaterSupply):
         self.warning_level = config['WaterTank']['warning_level']
         self.volume = volume
         self._level = 0
+        super().__init__()
 
     @property
     def level(self):
@@ -58,6 +62,7 @@ class DregsContainer(object):
         self.error_level = params['DregsContainer']['error_level']
         self.max_volume = params['DregsContainer']['size']
         self._level = 0
+        print('Dregs container connected...')
 
     @property
     def level(self):
@@ -87,6 +92,7 @@ class CoffeeGrinder(object):
         self.warning_level = config['CoffeeGrinder']['warning_level']
         self.capacity = params['CoffeeGrinder']['size']
         self._level = 0
+        print('Coffee grinder is up...')
 
     @property
     def level(self):
@@ -106,6 +112,9 @@ class CoffeeGrinder(object):
 
 class Brewer(object):
 
+    def __init__(self):
+        print('Brewer is up...')
+
     @staticmethod
     def extract_coffee(grinded_coffee_amount, water_amount):
         """This method symbolises coffee extraction"""
@@ -117,6 +126,7 @@ class MilkPump(object):
 
     def __init__(self):
         self.milk_supply = None
+        print('Milk pump is ready...')
 
     def supply_milk(self):
         self.milk_supply = True

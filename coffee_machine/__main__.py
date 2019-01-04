@@ -9,7 +9,17 @@ def start(water_supply):
 
     while running:
 
+        is_ready = machine.is_ready()
 
-        command = input()
+        while is_ready:
+
+            command = input()
+
+            try:
+                program = programs[command]
+            except KeyError:
+                print('There is no such coffee program.')
+            else:
+                machine.prepare(program)
 
 start()

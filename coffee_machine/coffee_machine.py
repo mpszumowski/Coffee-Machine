@@ -63,6 +63,7 @@ class CoffeeMachine(object):
         milk = self.milk_pump.get_milk(milk.amount)
 
     def is_ready(self):
+        # TODO: create and check each class' is_ready() method
         return all(
             (isinstance(self.grinder, CoffeeGrinder),
              isinstance(self.water_supply, WaterSupply),

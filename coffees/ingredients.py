@@ -10,8 +10,8 @@ class Coffee(Ingredient):
     _config = get_config()['espresso_unit']
 
     def __init__(self, units, additional_water=0):
-        self.coffee = self._config['coffee_grams'] * units
-        water = self.coffee / self._config['ratio_coffee2water']
+        self.grains = self._config['coffee_grams'] * units
+        water = self.grains / self._config['ratio_coffee2water']
         self.water = water + additional_water
 
 

@@ -33,7 +33,6 @@ class CoffeeGrinder(object):
 
 
 class CoffeeMachine(object):
-    coffee_programs = {}  # TODO: add typing - key: str, val: class
 
     def __init__(self, water_supply):
         params = get_params()
@@ -44,7 +43,12 @@ class CoffeeMachine(object):
         self.dregs = DregsContainer()
         self.grinder = CoffeeGrinder()
         self.is_ready()
+        self.coffee_programs = {}  # TODO: add typing - key: str, val: class
         self._load_coffee_programs()
+        self.procedure_steps = {
+            coffees.Coffee: self.add_coffee,
+            coffees.Milk: self.add_milk,
+        }
 
     def _load_coffee_programs(self):
         classes = getmembers(coffees,
@@ -58,6 +62,24 @@ class CoffeeMachine(object):
         if coffee_program is None:
             raise CoffeeMachineException(
                 '"{}" program has not been found. Most probably it has not been programmed.'.format(program))
+        for ingredient in coffee_program.procedure:
+            self.procedure_step(ingredient)
+            pass
+
+    def procedure_step(self, ingredient):
+        try:
+            step = self.procedure_steps[type(ingredient)]
+        except KeyError as e:
+            raise TypeError('Coffee machine {} does not know what to do with {}'.format(self, ingredient)) from e
+        else:
+            step(ingredient)
+
+    def add_coffee(self, coffee: coffees.Coffee):
+        pass
+
+    def add_milk(self, milk: coffees.Milk):
+        pass
+
     """
     def add_coffee(self, amount, num_espresso_units):
         grinded_coffee = self.grinder.grind(amount / 2, num_espresso_units)  # espresso ratio 1 g coffee : 2 ml of water

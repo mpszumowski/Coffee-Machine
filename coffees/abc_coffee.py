@@ -10,3 +10,8 @@ class AbcCoffeeProgram(metaclass=ABCMeta):
     @property
     def milk(self):
         return 0
+
+    @property
+    @abstractmethod
+    def procedure(self):
+        raise NotImplementedError

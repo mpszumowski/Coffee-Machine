@@ -1,60 +1,8 @@
 from coffee_machine import coffees
-from coffee_machine.config import get_params, get_config
-from coffee_machine.dregs_container import DregsContainer
+from coffee_machine.config import get_params
 from coffee_machine.exceptions import CoffeeMachineException
 from coffee_machine.util import get_coffee_programs
-from coffee_machine.water_supply import WaterSupply
-
-
-class CoffeeGrinder(object):
-
-    def __init__(self):
-        config = get_config()
-        params = get_params()
-        self.warning_level = config['CoffeeGrinder']['warning_level']
-        self.capacity = params['CoffeeGrinder']['size']
-        self._level = 0
-
-    @property
-    def level(self):
-        return self._level
-
-    @level.setter
-    def level(self, amount):
-        self._level = amount
-
-    def refill(self, amount):
-        self._level += amount
-
-    def grind(self, amount):
-        self._level -= amount
-        return amount
-
-
-class Brewer(object):
-
-    @staticmethod
-    def extract_coffee(grinded_coffee_amount, water_amount):
-        """This method symbolises coffee extraction"""
-        coffee = water_amount
-        return coffee
-
-
-class MilkPump(object):
-
-    def __init__(self):
-        self.milk_supply = None
-
-    def supply_milk(self):
-        self.milk_supply = True
-
-    def get_milk(self, milk_amount):
-        """Symbolic milk getter. In most coffee machines, the milk pump does not know if you supply milk.
-        It either pumps it or returns nothing."""
-        milk = 0
-        if self.milk_supply:
-            milk = milk_amount
-        return milk
+from coffee_machine.components import WaterSupply, DregsContainer, CoffeeGrinder, Brewer, MilkPump
 
 
 class CoffeeMachine(object):

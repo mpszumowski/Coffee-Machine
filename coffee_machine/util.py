@@ -2,10 +2,6 @@ from inspect import getmembers, isclass, isabstract
 from coffee_machine import coffees
 
 
-class RefillableContainer(object):
-    pass
-
-
 def get_coffee_programs():
     """
     Yield tuples of class (name, type) representing coffee programs from coffees package

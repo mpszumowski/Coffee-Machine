@@ -4,8 +4,42 @@ from coffee_machine.config import get_config, get_params
 from coffee_machine.exceptions import WaterTankException, DregsContainerException
 
 
+class CoffeeMachineComponent(metaclass=ABCMeta):
+    def is_ready(self) -> bool:
+        pass
+
+
 class RefillableContainer(object):
     pass
+
+
+class CoffeeGrinder(object):
+
+    def __init__(self):
+        self._level = 0  # Reined by descriptor, common for some components (super().__init__())
+        config = get_config()  # individual per component
+        params = get_params()  # |
+        self.warning_level = config['CoffeeGrinder']['warning_level']  # |
+        self.capacity = params['CoffeeGrinder']['size']  # |
+        print('Coffee grinder is up...')  # -----
+
+    @property
+    def level(self):  # common for some components
+        return self._level
+
+    @level.setter  # same + validation and notification per component
+    def level(self, amount):
+        self._level = amount
+
+    def refill(self, amount):  # individual name, common logic (separate method for each class calling super())
+        self._level += amount
+
+    def grind(self, amount):  # individual name, common logic (separate method for each class calling super())
+        self._level -= amount
+        return amount
+
+    def is_ready(self):  # common for all components, but each implements it individually
+        pass  # Container subclasses may call super() to check level, brewers etc. always return True
 
 
 class WaterSupply(metaclass=ABCMeta):
@@ -14,13 +48,16 @@ class WaterSupply(metaclass=ABCMeta):
         print('Water supply connected...')
 
     def get_water(self, amount):
-        raise NotImplementedError
+        """Return amount passed and do optional things"""
 
 
 class WaterLine(WaterSupply):
 
     def get_water(self, amount):
         return amount
+
+    def is_ready(self):
+        return True
 
 
 class WaterTank(WaterSupply):
@@ -39,7 +76,7 @@ class WaterTank(WaterSupply):
     @level.setter
     def level(self, amount):
         self._level = amount
-        if self._level < self.volume * self.warning_level:
+        if not self.is_ready():
             #  TODO: notify user to refill water tank
             pass
 
@@ -52,6 +89,9 @@ class WaterTank(WaterSupply):
         self._level -= amount
         return amount
 
+    def is_ready(self):
+        return self._level < self.volume * self.warning_level
+
 
 class DregsContainer(object):
 
@@ -59,7 +99,6 @@ class DregsContainer(object):
         config = get_config()
         params = get_params()
         self.warning_level = config['DregsContainer']['warning_level']
-        self.error_level = params['DregsContainer']['error_level']
         self.max_volume = params['DregsContainer']['size']
         self._level = 0
         print('Dregs container connected...')
@@ -73,41 +112,15 @@ class DregsContainer(object):
         if value > self.max_volume:
             raise DregsContainerException("Dregs container is full!")
         self._level = value
-        if self._level > self.max_volume * self.error_level:
+        if not self.is_ready():
             # TODO: notify machine to stop serving coffee
-            pass
-        elif self._level > self.max_volume * self.warning_level:
-            # TODO: notify user to empty dregs container
             pass
 
     def store(self, value):
         self.level += value
 
-
-class CoffeeGrinder(object):
-
-    def __init__(self):
-        config = get_config()
-        params = get_params()
-        self.warning_level = config['CoffeeGrinder']['warning_level']
-        self.capacity = params['CoffeeGrinder']['size']
-        self._level = 0
-        print('Coffee grinder is up...')
-
-    @property
-    def level(self):
-        return self._level
-
-    @level.setter
-    def level(self, amount):
-        self._level = amount
-
-    def refill(self, amount):
-        self._level += amount
-
-    def grind(self, amount):
-        self._level -= amount
-        return amount
+    def is_ready(self):
+        return self._level < self.max_volume * self.warning_level
 
 
 class Brewer(object):
@@ -120,6 +133,9 @@ class Brewer(object):
         """This method symbolises coffee extraction"""
         coffee = water_amount
         return coffee
+
+    def is_ready(self):
+        return True
 
 
 class MilkPump(object):
@@ -138,3 +154,6 @@ class MilkPump(object):
         if self.milk_supply:
             milk = milk_amount
         return milk
+
+    def is_ready(self):
+        return True

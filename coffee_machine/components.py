@@ -64,8 +64,9 @@ class WaterTank(WaterSupply):
 
     def __init__(self):
         config = get_config()
+        params = get_params()
         self.warning_level = config['WaterTank']['warning_level']
-        self.volume = config['WaterTank']['size']
+        self.volume = params['WaterTank']['size']
         self._level = 0
         super().__init__()
 

@@ -62,10 +62,10 @@ class WaterLine(WaterSupply):
 
 class WaterTank(WaterSupply):
 
-    def __init__(self, volume):
+    def __init__(self):
         config = get_config()
         self.warning_level = config['WaterTank']['warning_level']
-        self.volume = volume
+        self.volume = config['WaterTank']['size']
         self._level = 0
         super().__init__()
 

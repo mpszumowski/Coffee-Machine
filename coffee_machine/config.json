@@ -3,13 +3,13 @@
     "coffee_grams": 15,
     "ratio_coffee2water": 0.5
   },
-  "dregs_container": {
+  "DregsContainer": {
     "warning_level": 0.5
   },
-  "water_tank": {
+  "WaterTank": {
     "warning_level": 0.2
   },
-  "grinder": {
+  "CoffeeGrinder": {
     "warning_level": 0.2
   }
 }

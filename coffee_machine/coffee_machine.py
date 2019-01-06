@@ -1,14 +1,15 @@
 from inspect import getmembers, isclass, isabstract
 
 from coffee_machine import coffees
-from coffee_machine.components import WaterSupply, DregsContainer, CoffeeGrinder, Brewer, MilkPump
+from coffee_machine.components import (Brewer, CoffeeGrinder, DregsContainer,
+                                       MilkPump, WaterTank)
 from coffee_machine.config import get_params
 from coffee_machine.exceptions import CoffeeMachineException
 
 
 class CoffeeMachine(object):
 
-    def __init__(self, water_supply):
+    def __init__(self, water_supply=WaterTank):
         params = get_params()
         __version__ = params['CoffeeMachine']['version']
         __model__ = params['CoffeeMachine']['model']

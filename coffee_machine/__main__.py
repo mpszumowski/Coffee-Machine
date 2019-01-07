@@ -13,14 +13,15 @@ def start():
 
         while is_ready:
 
-            command = input()
+            print('Select program:')
+            for key in programs.keys():
+                print(key)
 
+            program = input()
             try:
-                program = programs[command]
-            except KeyError:
-                print('There is no such coffee program.')
-            else:
                 machine.prepare(program)
+            except KeyError as e:
+                print(e)
 
 
 start()

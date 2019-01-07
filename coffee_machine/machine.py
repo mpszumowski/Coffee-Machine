@@ -40,7 +40,7 @@ class CoffeeMachine(object):
     def prepare(self, program):
         coffee_program = self.coffee_programs.get(program)
         if coffee_program is None:
-            raise CoffeeMachineException(
+            raise KeyError(
                 '"{}" program has not been found. Most probably it has not been programmed.'.format(program))
         for ingredient in coffee_program.procedure:
             self.procedure_step(ingredient)

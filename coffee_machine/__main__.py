@@ -19,9 +19,23 @@ def start():
 
             program = input()
             try:
-                machine.prepare(program)
+                programs[program]
             except KeyError as e:
                 print(e)
+            else:
+                print('Make it a notch stronger? \n y/n')
+                command = input()
+                add_espresso = False
+                if command.lower()[0] == 'y':
+                    print('Sure thing')
+                    add_espresso = True
+                elif command.lower()[0] == 'n':
+                    pass
+                else:
+                    print('Could not understand you. I\'ll make it stronger, '
+                          'but consider a triple.')
+                    add_espresso = True
+                machine.prepare(program, add_espresso)
 
 
 start()

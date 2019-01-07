@@ -37,12 +37,14 @@ class CoffeeMachine(object):
     def supply_milk(self):
         self.milk_pump.supply_milk()
 
-    def prepare(self, program):
+    def prepare(self, program, add_espresso=False):
         coffee_program = self.coffee_programs.get(program)
         if coffee_program is None:
             raise KeyError(
                 '"{}" program has not been found. Most probably it has not been programmed.'.format(program))
         c = coffee_program()
+        if add_espresso:
+            c.coffee.units += 1
         for ingredient in c.follow_procedure():
             self.procedure_step(ingredient)
             pass

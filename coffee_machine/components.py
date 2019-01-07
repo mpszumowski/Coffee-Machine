@@ -10,32 +10,42 @@ class CoffeeMachineComponent(metaclass=ABCMeta):
 
 
 class RefillableContainer(object):
-    pass
-
-
-class CoffeeGrinder(object):
 
     def __init__(self):
-        self._level = 0  # Reined by descriptor, common for some components (super().__init__())
-        config = get_config()  # individual per component
-        params = get_params()  # |
-        self.warning_level = config['CoffeeGrinder']['warning_level']  # |
-        self.capacity = params['CoffeeGrinder']['size']  # |
-        print('Coffee grinder is up...')  # -----
+        self._level = 0
+        print('Container initialized')
+        super(RefillableContainer, self).__init__()
 
     @property
-    def level(self):  # common for some components
+    def level(self):
         return self._level
 
-    @level.setter  # same + validation and notification per component
+    @level.setter
     def level(self, amount):
         self._level = amount
 
-    def refill(self, amount):  # individual name, common logic (separate method for each class calling super())
-        self._level += amount
+    def add(self, amount):
+        self.level += amount
 
-    def grind(self, amount):  # individual name, common logic (separate method for each class calling super())
-        self._level -= amount
+    def subtract(self, amount):
+        self.level -= amount
+
+
+class CoffeeGrinder(RefillableContainer):
+
+    def __init__(self):
+        super().__init__()
+        config = get_config()
+        params = get_params()
+        self.warning_level = config['CoffeeGrinder']['warning_level']
+        self.capacity = params['CoffeeGrinder']['size']
+        print('Coffee grinder is up...')
+
+    def refill(self, amount):
+        super().add(amount)
+
+    def grind(self, amount):
+        super().subtract(amount)
         return amount
 
     def is_ready(self):  # common for all components, but each implements it individually
@@ -60,43 +70,40 @@ class WaterLine(WaterSupply):
         return True
 
 
-class WaterTank(WaterSupply):
+class WaterTank(RefillableContainer, WaterSupply):
 
     def __init__(self):
+        super().__init__()
         config = get_config()
         params = get_params()
         self.warning_level = config['WaterTank']['warning_level']
         self.volume = params['WaterTank']['size']
-        self._level = 0
-        super().__init__()
 
-    @property
-    def level(self):
-        return self._level
-
-    @level.setter
+    @RefillableContainer.level.setter
     def level(self, amount):
         self._level = amount
+        print('Setting watertank level')
         if not self.is_ready():
             #  TODO: notify user to refill water tank
             pass
 
     def refill(self, amount):
-        self._level += amount
+        super().add(amount)
 
     def get_water(self, amount):
         if self._level < amount:
             raise WaterTankException("The water tank is empty!")
-        self._level -= amount
+        super().subtract(amount)
         return amount
 
     def is_ready(self):
         return self._level < self.volume * self.warning_level
 
 
-class DregsContainer(object):
+class DregsContainer(RefillableContainer):
 
     def __init__(self):
+        super().__init__()
         config = get_config()
         params = get_params()
         self.warning_level = config['DregsContainer']['warning_level']
@@ -104,21 +111,17 @@ class DregsContainer(object):
         self._level = 0
         print('Dregs container connected...')
 
-    @property
-    def level(self):
-        return self._level
-
-    @level.setter
-    def level(self, value):
-        if value > self.max_volume:
+    @RefillableContainer.level.setter
+    def level(self, amount):
+        if amount > self.max_volume:
             raise DregsContainerException("Dregs container is full!")
-        self._level = value
+        self._level = amount
         if not self.is_ready():
             # TODO: notify machine to stop serving coffee
             pass
 
-    def store(self, value):
-        self.level += value
+    def store(self, amount):
+        super().add(amount)
 
     def is_ready(self):
         return self._level < self.max_volume * self.warning_level

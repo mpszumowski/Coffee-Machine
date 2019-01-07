@@ -1,1 +1,1 @@
-from coffee_machine import coffee_machine, components, coffees
+from coffee_machine import machine, components, coffees

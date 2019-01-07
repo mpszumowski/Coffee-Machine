@@ -1,6 +1,6 @@
 import unittest
 
-from coffee_machine.coffee_machine import CoffeeMachine
+from coffee_machine.machine import CoffeeMachine
 from coffee_machine.components import WaterLine
 
 

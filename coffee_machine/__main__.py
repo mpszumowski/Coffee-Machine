@@ -1,4 +1,4 @@
-from coffee_machine.coffee_machine import CoffeeMachine
+from coffee_machine.machine import CoffeeMachine
 
 
 def start(water_supply):

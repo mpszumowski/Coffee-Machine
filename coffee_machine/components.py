@@ -31,7 +31,7 @@ class RefillableContainer(object):
         self.level -= amount
 
 
-class CoffeeGrinder(RefillableContainer):
+class CoffeeGrinder(RefillableContainer, CoffeeMachineComponent):
 
     def __init__(self):
         super().__init__()
@@ -48,8 +48,8 @@ class CoffeeGrinder(RefillableContainer):
         super().subtract(amount)
         return amount
 
-    def is_ready(self):  # common for all components, but each implements it individually
-        pass  # Container subclasses may call super() to check level, brewers etc. always return True
+    def is_ready(self):
+        return self.level < self.capacity * self.warning_level
 
 
 class WaterSupply(metaclass=ABCMeta):
@@ -61,7 +61,7 @@ class WaterSupply(metaclass=ABCMeta):
         """Return amount passed and do optional things"""
 
 
-class WaterLine(WaterSupply):
+class WaterLine(WaterSupply, CoffeeMachineComponent):
 
     def get_water(self, amount):
         return amount
@@ -91,16 +91,16 @@ class WaterTank(RefillableContainer, WaterSupply):
         super().add(amount)
 
     def get_water(self, amount):
-        if self._level < amount:
+        if self.level < amount:
             raise WaterTankException("The water tank is empty!")
         super().subtract(amount)
         return amount
 
     def is_ready(self):
-        return self._level < self.volume * self.warning_level
+        return self.level < self.volume * self.warning_level
 
 
-class DregsContainer(RefillableContainer):
+class DregsContainer(RefillableContainer, CoffeeMachineComponent):
 
     def __init__(self):
         super().__init__()
@@ -124,10 +124,10 @@ class DregsContainer(RefillableContainer):
         super().add(amount)
 
     def is_ready(self):
-        return self._level < self.max_volume * self.warning_level
+        return self.level < self.max_volume * self.warning_level
 
 
-class Brewer(object):
+class Brewer(CoffeeMachineComponent):
 
     def __init__(self):
         print('Brewer is up...')
@@ -142,7 +142,7 @@ class Brewer(object):
         return True
 
 
-class MilkPump(object):
+class MilkPump(CoffeeMachineComponent):
 
     def __init__(self):
         self.milk_supply = None

@@ -11,6 +11,16 @@ class CoffeeMachineComponent(metaclass=ABCMeta):
         pass
 
 
+class WaterSupply(metaclass=ABCMeta):
+
+    def __init__(self):
+        print('Water supply connected...')
+
+    @abstractmethod
+    def get_water(self, amount):
+        """Return amount passed and do optional things"""
+
+
 class RefillableContainer(object):
 
     def __init__(self):
@@ -30,37 +40,6 @@ class RefillableContainer(object):
 
     def subtract(self, amount):
         self.level -= amount
-
-
-class CoffeeGrinder(RefillableContainer, CoffeeMachineComponent):
-
-    def __init__(self):
-        super().__init__()
-        config = get_config()
-        params = get_params()
-        self.warning_level = config['CoffeeGrinder']['warning_level']
-        self.capacity = params['CoffeeGrinder']['size']
-        print('Coffee grinder is up...')
-
-    def refill(self, amount):
-        super().add(amount)
-
-    def grind(self, amount):
-        super().subtract(amount)
-        return amount
-
-    def is_ready(self):
-        return self.level < self.capacity * self.warning_level
-
-
-class WaterSupply(metaclass=ABCMeta):
-
-    def __init__(self):
-        print('Water supply connected...')
-
-    @abstractmethod
-    def get_water(self, amount):
-        """Return amount passed and do optional things"""
 
 
 class WaterLine(WaterSupply, CoffeeMachineComponent):
@@ -100,6 +79,27 @@ class WaterTank(RefillableContainer, WaterSupply):
 
     def is_ready(self):
         return self.level < self.volume * self.warning_level
+
+
+class CoffeeGrinder(RefillableContainer, CoffeeMachineComponent):
+
+    def __init__(self):
+        super().__init__()
+        config = get_config()
+        params = get_params()
+        self.warning_level = config['CoffeeGrinder']['warning_level']
+        self.capacity = params['CoffeeGrinder']['size']
+        print('Coffee grinder is up...')
+
+    def refill(self, amount):
+        super().add(amount)
+
+    def grind(self, amount):
+        super().subtract(amount)
+        return amount
+
+    def is_ready(self):
+        return self.level < self.capacity * self.warning_level
 
 
 class DregsContainer(RefillableContainer, CoffeeMachineComponent):

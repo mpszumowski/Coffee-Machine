@@ -1,8 +1,8 @@
 from coffee_machine.machine import CoffeeMachine
 
 
-def start(water_supply):
-    machine = CoffeeMachine(water_supply)
+def start():
+    machine = CoffeeMachine()
     running = True
 
     programs = machine.coffee_programs
@@ -21,5 +21,6 @@ def start(water_supply):
                 print('There is no such coffee program.')
             else:
                 machine.prepare(program)
+
 
 start()

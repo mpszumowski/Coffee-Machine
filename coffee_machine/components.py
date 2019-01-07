@@ -1,10 +1,12 @@
-from abc import ABCMeta
+from abc import ABCMeta, abstractmethod
 
 from coffee_machine.config import get_config, get_params
 from coffee_machine.exceptions import WaterTankException, DregsContainerException
 
 
 class CoffeeMachineComponent(metaclass=ABCMeta):
+
+    @abstractmethod
     def is_ready(self) -> bool:
         pass
 
@@ -57,6 +59,7 @@ class WaterSupply(metaclass=ABCMeta):
     def __init__(self):
         print('Water supply connected...')
 
+    @abstractmethod
     def get_water(self, amount):
         """Return amount passed and do optional things"""
 

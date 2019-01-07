@@ -15,7 +15,6 @@ class RefillableContainer(object):
 
     def __init__(self):
         self._level = 0
-        print('Container initialized')
         super(RefillableContainer, self).__init__()
 
     @property

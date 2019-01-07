@@ -42,7 +42,8 @@ class CoffeeMachine(object):
         if coffee_program is None:
             raise KeyError(
                 '"{}" program has not been found. Most probably it has not been programmed.'.format(program))
-        for ingredient in coffee_program.procedure:
+        c = coffee_program()
+        for ingredient in c.follow_procedure():
             self.procedure_step(ingredient)
             pass
 

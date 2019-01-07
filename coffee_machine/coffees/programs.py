@@ -3,33 +3,33 @@ from .ingredients import Coffee, Milk
 
 
 class Cappuccino(AbcCoffeeProgram):
-    coffee = Coffee(units=1)
-    milk = Milk(60)
-    procedure = (coffee, milk)
+    _coffee = Coffee(units=1)
+    _milk = Milk(60)
+    _procedure = ('coffee', 'milk')
 
 
 class Doppio(AbcCoffeeProgram):
-    coffee = Coffee(units=2)
-    procedure = (coffee,)
+    _coffee = Coffee(units=2)
+    _procedure = ('coffee',)
 
 
 class Espresso(AbcCoffeeProgram):
-    coffee = Coffee(units=1)
-    procedure = (coffee,)
+    _coffee = Coffee(units=1)
+    _procedure = ('coffee',)
 
 
 class Latte(AbcCoffeeProgram):
-    coffee = Coffee(units=1)
-    milk = Milk(220)
-    procedure = (milk, coffee)
+    _coffee = Coffee(units=1)
+    _milk = Milk(220)
+    _procedure = ('milk', 'coffee')
 
 
 class Lungo(AbcCoffeeProgram):
-    coffee = Coffee(units=1, additional_water=90)
-    procedure = (coffee,)
+    _coffee = Coffee(units=1, additional_water=90)
+    _procedure = ('coffee',)
 
 
 class Macchiato(AbcCoffeeProgram):
-    coffee = Coffee(units=1)
-    milk = Milk(30)
-    procedure = (coffee, milk)
+    _coffee = Coffee(units=1)
+    _milk = Milk(30)
+    _procedure = ('coffee', 'milk')

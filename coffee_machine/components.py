@@ -33,6 +33,9 @@ class RefillableContainer(object):
 
     @level.setter
     def level(self, amount):
+        if amount < 0:
+            raise ValueError('Level of Refillable Container subclass: '
+                             '{} cannot be lower than 0'.format(self.__class__))
         self._level = amount
 
     def add(self, amount):
@@ -62,7 +65,7 @@ class WaterTank(RefillableContainer, WaterSupply):
 
     @RefillableContainer.level.setter
     def level(self, amount):
-        self._level = amount
+        RefillableContainer.level.fset(self, amount)
         print('Setting watertank level')
         if not self.is_ready():
             #  TODO: notify user to refill water tank
@@ -117,7 +120,7 @@ class DregsContainer(RefillableContainer, CoffeeMachineComponent):
     def level(self, amount):
         if amount > self.max_volume:
             raise DregsContainerException("Dregs container is full!")
-        self._level = amount
+        RefillableContainer.level.fset(self, amount)
         if not self.is_ready():
             # TODO: notify machine to stop serving coffee
             pass

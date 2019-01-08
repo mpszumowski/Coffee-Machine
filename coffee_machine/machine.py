@@ -8,12 +8,12 @@ from coffee_machine.config import get_params
 
 class CoffeeMachine(object):
 
-    def __init__(self, water_supply=WaterTank):
+    def __init__(self):
         params = get_params()
         __version__ = params['CoffeeMachine']['version']
         __model__ = params['CoffeeMachine']['model']
 
-        self.water_supply = water_supply(self)
+        self.water_supply = WaterTank(self)
         self.dregs = DregsContainer(self)
         self.grinder = CoffeeGrinder(self)
         self.brewer = Brewer(self)

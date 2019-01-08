@@ -23,17 +23,6 @@ class CoffeeMachineComponent(metaclass=ABCMeta):
             self.owner.notifications.update({info_key: notification})
 
 
-class WaterSupply(metaclass=ABCMeta):
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        print('Water supply connected...')
-
-    @abstractmethod
-    def get_water(self, amount):
-        """Return amount passed and do optional things"""
-
-
 class RefillableContainer(object):
 
     def __init__(self, *args, **kwargs):
@@ -58,19 +47,7 @@ class RefillableContainer(object):
         self.level -= amount
 
 
-class WaterLine(WaterSupply, CoffeeMachineComponent):
-
-    def __str__(self):
-        return "Water line supply"
-
-    def get_water(self, amount):
-        return amount
-
-    def health(self):
-        return True
-
-
-class WaterTank(RefillableContainer, WaterSupply, CoffeeMachineComponent):
+class WaterTank(RefillableContainer, CoffeeMachineComponent):
 
     def __init__(self, owner):
         super().__init__(owner)
@@ -78,6 +55,7 @@ class WaterTank(RefillableContainer, WaterSupply, CoffeeMachineComponent):
         params = get_params()
         self.warning_level = config['WaterTank']['warning_level']
         self.volume = params['WaterTank']['size']
+        print('Water tank connected')
 
     def __str__(self):
         return 'Water tank component. Volume: {} | Current level: {}'.format(

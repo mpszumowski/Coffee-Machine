@@ -65,6 +65,7 @@ class WaterTank(RefillableContainer, CoffeeMachineComponent):
     def refill(self):
         amount = self.volume - self.level
         super().add(amount)
+        self.health()
         print('Watertank refilled')
 
     def get_water(self, amount):
@@ -103,6 +104,7 @@ class CoffeeGrinder(RefillableContainer, CoffeeMachineComponent):
     def refill(self):
         amount = self.capacity - self.level
         super().add(amount)
+        self.health()
         print('Coffee grinder refilled.')
 
     def grind(self, amount):
@@ -140,6 +142,8 @@ class DregsContainer(RefillableContainer, CoffeeMachineComponent):
     def empty(self):
         amount = self.level
         super().subtract(amount)
+        self.health()
+        print('Dregs container is empty.')
 
     def store(self, amount):
         super().add(amount)
@@ -191,6 +195,7 @@ class MilkPump(CoffeeMachineComponent):
 
     def supply_milk(self):
         self.milk_supply = True
+        self.health()
         print('Milk supplied.')
 
     def get_milk(self, milk_amount):

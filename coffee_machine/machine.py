@@ -22,6 +22,7 @@ class CoffeeMachine(object):
                            self.brewer, self.milk_pump}
         self.notifications = {}
 
+        self.ready = None
         self.is_ready()
         self.coffee_programs = {}  # TODO: add typing - key: str, val: class
         self._load_coffee_programs()
@@ -51,7 +52,7 @@ class CoffeeMachine(object):
             c.coffee.units += 1
         for ingredient in c.follow_procedure():
             self.procedure_step(ingredient)
-            pass
+        self.is_ready()
 
     def procedure_step(self, ingredient):
         try:
@@ -71,4 +72,4 @@ class CoffeeMachine(object):
         milk = self.milk_pump.get_milk(milk.amount)
 
     def is_ready(self):
-        return all(c.health() for c in self.components)
+        self.ready = all(c.health() for c in self.components)

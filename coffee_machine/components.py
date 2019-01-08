@@ -62,16 +62,10 @@ class WaterTank(RefillableContainer, CoffeeMachineComponent):
             self.volume, self.level
         )
 
-    @RefillableContainer.level.setter
-    def level(self, amount):
-        RefillableContainer.level.fset(self, amount)
-        print('Setting watertank level')
-        if not self.is_ready():
-            #  TODO: notify user to refill water tank
-            pass
-
-    def refill(self, amount):
+    def refill(self):
+        amount = self.volume - self.level
         super().add(amount)
+        print('Watertank refilled')
 
     def get_water(self, amount):
         if self.level < amount:
@@ -106,8 +100,10 @@ class CoffeeGrinder(RefillableContainer, CoffeeMachineComponent):
             self.capacity, self.level
         )
 
-    def refill(self, amount):
+    def refill(self):
+        amount = self.capacity - self.level
         super().add(amount)
+        print('Coffee grinder refilled.')
 
     def grind(self, amount):
         super().subtract(amount)
@@ -140,15 +136,6 @@ class DregsContainer(RefillableContainer, CoffeeMachineComponent):
         return 'Dregs container component. Capacity: {} | Current level: {}'.format(
             self.max_volume, self.level
         )
-
-    @RefillableContainer.level.setter
-    def level(self, amount):
-        if amount > self.max_volume:
-            raise DregsContainerException("Dregs container is full!")
-        RefillableContainer.level.fset(self, amount)
-        if not self.is_ready():
-            # TODO: notify machine to stop serving coffee
-            pass
 
     def empty(self):
         amount = self.level
@@ -204,6 +191,7 @@ class MilkPump(CoffeeMachineComponent):
 
     def supply_milk(self):
         self.milk_supply = True
+        print('Milk supplied.')
 
     def get_milk(self, milk_amount):
         """Symbolic milk getter. In most coffee machines, the milk pump does not know if you supply milk.
@@ -214,8 +202,12 @@ class MilkPump(CoffeeMachineComponent):
         return milk
 
     def health(self):
-        self.notify()
-        return self.is_ready()
+        is_ready = self.is_ready()
+        message = None
+        if not is_ready:
+            message = 'Milk is not supplied'
+        self.notify(message=message)
+        return is_ready
 
     def is_ready(self):
-        return True
+        return self.milk_supply

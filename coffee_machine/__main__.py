@@ -11,7 +11,7 @@ def start():
 
     while running:
 
-        while machine.is_ready():
+        while machine.ready:
 
             print('Select program:')
             for key in programs.keys():

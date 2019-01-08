@@ -14,7 +14,7 @@ class CoffeeMachineComponent(metaclass=ABCMeta):
     def health(self):
         pass
 
-    def notify(self, message=None):
+    def _notify(self, message=None):
         info_key = type(self).__name__
         if not message:
             self.owner.notifications.pop(info_key, None)
@@ -78,7 +78,7 @@ class WaterTank(RefillableContainer, CoffeeMachineComponent):
         message = None
         if not is_ready:
             message = 'Water low: refill water tank'
-        self.notify(message=message)
+        self._notify(message=message)
         return is_ready
 
     def is_ready(self):
@@ -114,7 +114,7 @@ class CoffeeGrinder(RefillableContainer, CoffeeMachineComponent):
         message = None
         if not is_ready:
             message = 'Coffee low: refill coffee grinder'
-        self.notify(message=message)
+        self._notify(message=message)
         return is_ready
 
     def is_ready(self):
@@ -149,7 +149,7 @@ class DregsContainer(RefillableContainer, CoffeeMachineComponent):
         message = None
         if not is_ready:
             message = 'Dregs container full: empty container'
-        self.notify(message=message)
+        self._notify(message=message)
         return is_ready
 
     def is_ready(self):
@@ -172,7 +172,7 @@ class Brewer(CoffeeMachineComponent):
         return coffee
 
     def health(self):
-        self.notify()
+        self._notify()
         return self.is_ready()
 
     def is_ready(self):
@@ -206,7 +206,7 @@ class MilkPump(CoffeeMachineComponent):
         message = None
         if not is_ready:
             message = 'Milk is not supplied'
-        self.notify(message=message)
+        self._notify(message=message)
         return is_ready
 
     def is_ready(self):

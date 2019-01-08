@@ -6,12 +6,12 @@ def start():
     running = True
 
     programs = machine.coffee_programs
+    # TODO: add standby phase to catch first KeyboardInterrupt
+    # TODO: add readiness checks and refill/empty commands
 
     while running:
 
-        is_ready = machine.is_ready()
-
-        while is_ready:
+        while machine.is_ready():
 
             print('Select program:')
             for key in programs.keys():
@@ -36,6 +36,29 @@ def start():
                           'but consider a triple.')
                     add_espresso = True
                 machine.prepare(program, add_espresso)
+
+        for _, message in machine.notifications.items():
+            print(message)
+
+        operations = {
+            'refill water': machine.water_supply.refill,
+            'empty dregs': machine.dregs.empty,
+            'refill coffee': machine.grinder.refill,
+            'supply milk': machine.milk_pump.supply_milk
+        }
+
+        print('Use one of the following commands:')
+        for op in operations.keys():
+            print(op)
+
+        command = input()
+
+        try:
+            operation = operations[command]
+        except KeyError:
+            print('Unknown command, please try again')
+        else:
+            operation()
 
 
 start()

@@ -4,7 +4,6 @@ from coffee_machine import coffees
 from coffee_machine.components import (Brewer, CoffeeGrinder, DregsContainer,
                                        MilkPump, WaterTank)
 from coffee_machine.config import get_params
-from coffee_machine.exceptions import CoffeeMachineException
 
 
 class CoffeeMachine(object):
@@ -14,14 +13,19 @@ class CoffeeMachine(object):
         __version__ = params['CoffeeMachine']['version']
         __model__ = params['CoffeeMachine']['model']
 
-        self.water_supply = water_supply()
-        self.dregs = DregsContainer()
-        self.grinder = CoffeeGrinder()
-        self.brewer = Brewer()
-        self.milk_pump = MilkPump()
+        self.water_supply = water_supply(self)
+        self.dregs = DregsContainer(self)
+        self.grinder = CoffeeGrinder(self)
+        self.brewer = Brewer(self)
+        self.milk_pump = MilkPump(self)
+        self.components = {self.grinder, self.water_supply, self.dregs,
+                           self.brewer, self.milk_pump}
+        self.notifications = {}
+
         self.is_ready()
         self.coffee_programs = {}  # TODO: add typing - key: str, val: class
         self._load_coffee_programs()
+
         self.procedure_steps = {
             coffees.Coffee: self.add_coffee,
             coffees.Milk: self.add_milk,
@@ -67,6 +71,4 @@ class CoffeeMachine(object):
         milk = self.milk_pump.get_milk(milk.amount)
 
     def is_ready(self):
-        components = {self.grinder, self.water_supply, self.dregs,
-                      self.brewer, self.milk_pump}
-        return all(c.is_ready() for c in components)
+        return all(c.health() for c in self.components)

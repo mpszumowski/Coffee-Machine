@@ -6,14 +6,27 @@ from coffee_machine.exceptions import WaterTankException, DregsContainerExceptio
 
 class CoffeeMachineComponent(metaclass=ABCMeta):
 
+    def __init__(self, owner, *args, **kwargs):
+        self.owner = owner
+        super(CoffeeMachineComponent, self).__init__(*args, **kwargs)
+
     @abstractmethod
-    def is_ready(self) -> bool:
+    def health(self):
         pass
+
+    def notify(self, message=None):
+        info_key = type(self).__name__
+        if not message:
+            self.owner.notifications.pop(info_key, None)
+        else:
+            notification = '{} \n {}'.format(str(self), message)
+            self.owner.notifications.update({info_key: notification})
 
 
 class WaterSupply(metaclass=ABCMeta):
 
-    def __init__(self):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         print('Water supply connected...')
 
     @abstractmethod
@@ -23,9 +36,9 @@ class WaterSupply(metaclass=ABCMeta):
 
 class RefillableContainer(object):
 
-    def __init__(self):
+    def __init__(self, *args, **kwargs):
         self._level = 0
-        super(RefillableContainer, self).__init__()
+        super(RefillableContainer, self).__init__(*args, **kwargs)
 
     @property
     def level(self):
@@ -47,21 +60,29 @@ class RefillableContainer(object):
 
 class WaterLine(WaterSupply, CoffeeMachineComponent):
 
+    def __str__(self):
+        return "Water line supply"
+
     def get_water(self, amount):
         return amount
 
-    def is_ready(self):
+    def health(self):
         return True
 
 
-class WaterTank(RefillableContainer, WaterSupply):
+class WaterTank(RefillableContainer, WaterSupply, CoffeeMachineComponent):
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self, owner):
+        super().__init__(owner)
         config = get_config()
         params = get_params()
         self.warning_level = config['WaterTank']['warning_level']
         self.volume = params['WaterTank']['size']
+
+    def __str__(self):
+        return 'Water tank component. Volume: {} | Current level: {}'.format(
+            self.volume, self.level
+        )
 
     @RefillableContainer.level.setter
     def level(self, amount):
@@ -80,19 +101,32 @@ class WaterTank(RefillableContainer, WaterSupply):
         super().subtract(amount)
         return amount
 
+    def health(self):
+        is_ready = self.is_ready()
+        message = None
+        if not is_ready:
+            message = 'Water low: refill water tank'
+        self.notify(message=message)
+        return is_ready
+
     def is_ready(self):
-        return self.level < self.volume * self.warning_level
+        return self.level > self.volume * self.warning_level
 
 
 class CoffeeGrinder(RefillableContainer, CoffeeMachineComponent):
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self, owner):
+        super().__init__(owner)
         config = get_config()
         params = get_params()
         self.warning_level = config['CoffeeGrinder']['warning_level']
         self.capacity = params['CoffeeGrinder']['size']
         print('Coffee grinder is up...')
+
+    def __str__(self):
+        return 'Coffee Grinder component. Capacity: {} | Current level: {}'.format(
+            self.capacity, self.level
+        )
 
     def refill(self, amount):
         super().add(amount)
@@ -101,20 +135,33 @@ class CoffeeGrinder(RefillableContainer, CoffeeMachineComponent):
         super().subtract(amount)
         return amount
 
+    def health(self):
+        is_ready = self.is_ready()
+        message = None
+        if not is_ready:
+            message = 'Coffee low: refill coffee grinder'
+        self.notify(message=message)
+        return is_ready
+
     def is_ready(self):
-        return self.level < self.capacity * self.warning_level
+        return self.level > self.capacity * self.warning_level
 
 
 class DregsContainer(RefillableContainer, CoffeeMachineComponent):
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self, owner):
+        super().__init__(owner)
         config = get_config()
         params = get_params()
         self.warning_level = config['DregsContainer']['warning_level']
         self.max_volume = params['DregsContainer']['size']
         self._level = 0
         print('Dregs container connected...')
+
+    def __str__(self):
+        return 'Dregs container component. Capacity: {} | Current level: {}'.format(
+            self.max_volume, self.level
+        )
 
     @RefillableContainer.level.setter
     def level(self, amount):
@@ -125,8 +172,20 @@ class DregsContainer(RefillableContainer, CoffeeMachineComponent):
             # TODO: notify machine to stop serving coffee
             pass
 
+    def empty(self):
+        amount = self.level
+        super().subtract(amount)
+
     def store(self, amount):
         super().add(amount)
+
+    def health(self):
+        is_ready = self.is_ready()
+        message = None
+        if not is_ready:
+            message = 'Dregs container full: empty container'
+        self.notify(message=message)
+        return is_ready
 
     def is_ready(self):
         return self.level < self.max_volume * self.warning_level
@@ -134,8 +193,12 @@ class DregsContainer(RefillableContainer, CoffeeMachineComponent):
 
 class Brewer(CoffeeMachineComponent):
 
-    def __init__(self):
+    def __init__(self, owner):
+        super().__init__(owner)
         print('Brewer is up...')
+
+    def __str__(self):
+        return 'Brewer component'
 
     @staticmethod
     def extract_coffee(grinded_coffee_amount, water_amount):
@@ -143,15 +206,23 @@ class Brewer(CoffeeMachineComponent):
         coffee = water_amount
         return coffee
 
+    def health(self):
+        self.notify()
+        return self.is_ready()
+
     def is_ready(self):
         return True
 
 
 class MilkPump(CoffeeMachineComponent):
 
-    def __init__(self):
+    def __init__(self, owner):
+        super().__init__(owner)
         self.milk_supply = None
         print('Milk pump is ready...')
+
+    def __str__(self):
+        return 'Milk pump component'
 
     def supply_milk(self):
         self.milk_supply = True
@@ -163,6 +234,10 @@ class MilkPump(CoffeeMachineComponent):
         if self.milk_supply:
             milk = milk_amount
         return milk
+
+    def health(self):
+        self.notify()
+        return self.is_ready()
 
     def is_ready(self):
         return True

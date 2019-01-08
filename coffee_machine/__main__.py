@@ -59,6 +59,7 @@ def start():
             print('Unknown command, please try again')
         else:
             operation()
+        machine.is_ready()  # TODO: move this check to internal machine logic
 
 
 start()

@@ -71,7 +71,10 @@ class CoffeeMachine(object):
         milk = self.milk_pump.get_milk(milk.amount)
 
     def is_ready(self):
-        self.ready = all(c.health() for c in self.components)
+        self.ready = True
+        for c in self.components:
+            if not c.health():
+                self.ready = False
 
     def update(self, component, notification=None):
         if notification:
@@ -79,3 +82,5 @@ class CoffeeMachine(object):
             self.ready = False
         else:
             self.notifications.pop(component, None)
+        if not self.notifications:
+            self.ready = True

@@ -7,7 +7,6 @@ def start():
 
     programs = machine.coffee_programs
     # TODO: add standby phase to catch first KeyboardInterrupt
-    # TODO: add readiness checks and refill/empty commands
 
     while running:
 
@@ -59,7 +58,6 @@ def start():
             print('Unknown command, please try again')
         else:
             operation()
-        machine.is_ready()  # TODO: move this check to internal machine logic
 
 
 start()

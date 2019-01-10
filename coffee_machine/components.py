@@ -15,12 +15,12 @@ class CoffeeMachineComponent(metaclass=ABCMeta):
         pass
 
     def _notify(self, message=None):
-        info_key = type(self).__name__
+        component_name = type(self).__name__
         if not message:
-            self.owner.notifications.pop(info_key, None)
+            self.owner.update(component_name)
         else:
             notification = '{} \n {}'.format(str(self), message)
-            self.owner.notifications.update({info_key: notification})
+            self.owner.update(component_name, notification)
 
 
 class RefillableContainer(object):

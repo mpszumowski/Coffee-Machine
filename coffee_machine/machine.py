@@ -73,3 +73,9 @@ class CoffeeMachine(object):
 
     def is_ready(self):
         self.ready = all(c.health() for c in self.components)
+
+    def update(self, component, notification=None):
+        if notification:
+            self.notifications.update({component: notification})
+        else:
+            self.notifications.pop(component, None)

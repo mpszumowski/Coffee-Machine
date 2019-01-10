@@ -52,7 +52,6 @@ class CoffeeMachine(object):
             c.coffee.units += 1
         for ingredient in c.follow_procedure():
             self.procedure_step(ingredient)
-        self.is_ready()
 
     def procedure_step(self, ingredient):
         try:
@@ -77,5 +76,6 @@ class CoffeeMachine(object):
     def update(self, component, notification=None):
         if notification:
             self.notifications.update({component: notification})
+            self.ready = False
         else:
             self.notifications.pop(component, None)

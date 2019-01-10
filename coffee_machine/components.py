@@ -7,11 +7,24 @@ from coffee_machine.exceptions import WaterTankException, DregsContainerExceptio
 class CoffeeMachineComponent(metaclass=ABCMeta):
 
     def __init__(self, owner, *args, **kwargs):
-        self.owner = owner
+        self.owner = owner  # TODO: typing
         super(CoffeeMachineComponent, self).__init__(*args, **kwargs)
 
+    @property
     @abstractmethod
+    def warning_message(self):
+        pass
+
     def health(self):
+        is_ready = self.is_ready()
+        message = None
+        if not is_ready:
+            message = self.warning_message
+        self._notify(message=message)
+        return is_ready
+
+    @abstractmethod
+    def is_ready(self):
         pass
 
     def _notify(self, message=None):
@@ -49,6 +62,8 @@ class RefillableContainer(object):
 
 class WaterTank(RefillableContainer, CoffeeMachineComponent):
 
+    warning_message = 'Water low: refill water tank'
+
     def __init__(self, owner):
         super().__init__(owner)
         config = get_config()
@@ -74,19 +89,13 @@ class WaterTank(RefillableContainer, CoffeeMachineComponent):
         super().subtract(amount)
         return amount
 
-    def health(self):
-        is_ready = self.is_ready()
-        message = None
-        if not is_ready:
-            message = 'Water low: refill water tank'
-        self._notify(message=message)
-        return is_ready
-
     def is_ready(self):
         return self.level > self.volume * self.warning_level
 
 
 class CoffeeGrinder(RefillableContainer, CoffeeMachineComponent):
+
+    warning_message = 'Coffee low: refill coffee grinder'
 
     def __init__(self, owner):
         super().__init__(owner)
@@ -111,19 +120,13 @@ class CoffeeGrinder(RefillableContainer, CoffeeMachineComponent):
         super().subtract(amount)
         return amount
 
-    def health(self):
-        is_ready = self.is_ready()
-        message = None
-        if not is_ready:
-            message = 'Coffee low: refill coffee grinder'
-        self._notify(message=message)
-        return is_ready
-
     def is_ready(self):
         return self.level > self.capacity * self.warning_level
 
 
 class DregsContainer(RefillableContainer, CoffeeMachineComponent):
+
+    warning_message = 'Dregs container full: empty container'
 
     def __init__(self, owner):
         super().__init__(owner)
@@ -148,19 +151,13 @@ class DregsContainer(RefillableContainer, CoffeeMachineComponent):
     def store(self, amount):
         super().add(amount)
 
-    def health(self):
-        is_ready = self.is_ready()
-        message = None
-        if not is_ready:
-            message = 'Dregs container full: empty container'
-        self._notify(message=message)
-        return is_ready
-
     def is_ready(self):
         return self.level < self.max_volume * self.warning_level
 
 
 class Brewer(CoffeeMachineComponent):
+
+    warning_message = 'Unexpected malfunction'
 
     def __init__(self, owner):
         super().__init__(owner)
@@ -185,6 +182,8 @@ class Brewer(CoffeeMachineComponent):
 
 class MilkPump(CoffeeMachineComponent):
 
+    warning_message = 'Milk is not supplied'
+
     def __init__(self, owner):
         super().__init__(owner)
         self.milk_supply = None
@@ -205,14 +204,6 @@ class MilkPump(CoffeeMachineComponent):
         if self.milk_supply:
             milk = milk_amount
         return milk
-
-    def health(self):
-        is_ready = self.is_ready()
-        message = None
-        if not is_ready:
-            message = 'Milk is not supplied'
-        self._notify(message=message)
-        return is_ready
 
     def is_ready(self):
         return self.milk_supply

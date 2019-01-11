@@ -1,4 +1,5 @@
 from abc import ABCMeta, abstractmethod
+from functools import wraps
 
 from coffee_machine.config import get_config, get_params
 from coffee_machine.exceptions import WaterTankException, DregsContainerException
@@ -87,6 +88,7 @@ class WaterTank(RefillableContainer, CoffeeMachineComponent):
         if self.level < amount:
             raise WaterTankException("The water tank is empty!")
         super().subtract(amount)
+        self.health()
         return amount
 
     def is_ready(self):
@@ -118,6 +120,7 @@ class CoffeeGrinder(RefillableContainer, CoffeeMachineComponent):
 
     def grind(self, amount):
         super().subtract(amount)
+        self.health()
         return amount
 
     def is_ready(self):
@@ -150,6 +153,7 @@ class DregsContainer(RefillableContainer, CoffeeMachineComponent):
 
     def store(self, amount):
         super().add(amount)
+        self.health()
 
     def is_ready(self):
         return self.level < self.max_volume * self.warning_level

@@ -72,10 +72,10 @@ def start():
                         print('Make it a notch stronger? \n y/n')
                         command = input()
                         add_espresso = False
-                        if command.lower()[0] == 'y':
+                        if command and command.lower()[0] == 'y':
                             print('Sure thing')
                             add_espresso = True
-                        elif command.lower()[0] == 'n':
+                        elif command and command.lower()[0] == 'n':
                             pass
                         else:
                             print('Could not understand you. '

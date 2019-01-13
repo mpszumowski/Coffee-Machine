@@ -82,16 +82,4 @@ class CoffeeMachine(object):
         print('Poured {} ml of milk'.format(int(milk)))
 
     def is_ready(self):
-        self.ready = True
-        for c in self.components:
-            if not c.health():
-                self.ready = False
-
-    def update(self, component, notification=None):
-        if notification:
-            self.notifications.update({component: notification})
-            self.ready = False
-        else:
-            self.notifications.pop(component, None)
-        if not self.notifications:
-            self.ready = True
+        return all(c.health() for c in self.components)

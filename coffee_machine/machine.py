@@ -1,4 +1,5 @@
 from inspect import getmembers, isclass, isabstract
+import time
 
 from coffee_machine import coffees
 from coffee_machine.components import (Brewer, CoffeeGrinder, DregsContainer,
@@ -52,6 +53,7 @@ class CoffeeMachine(object):
             c.coffee.units += 1
         for ingredient in c.follow_procedure():
             self.procedure_step(ingredient)
+        '\n Here you go! \n'
 
     def procedure_step(self, ingredient):
         try:
@@ -62,13 +64,22 @@ class CoffeeMachine(object):
             step(ingredient)
 
     def add_coffee(self, coffee: coffees.Coffee):
+        print('Grinding coffee...')
         grinded_coffee = self.grinder.grind(coffee.grains_amount)
+        time.sleep(1)
+        print('Getting water...')
         water = self.water_supply.get_water(coffee.water_amount)
-        self.brewer.extract_coffee(grinded_coffee, water)
+        time.sleep(1)
+        print('Brewing {} grams of coffee...'.format(int(grinded_coffee)))
+        extracted_coffee = self.brewer.extract_coffee(grinded_coffee, water)
+        time.sleep(1)
+        print('Poured {} ml of coffee'.format(int(extracted_coffee)))
         self.dregs.store(grinded_coffee)
 
     def add_milk(self, milk: coffees.Milk):
+        time.sleep(1)
         milk = self.milk_pump.get_milk(milk.amount)
+        print('Poured {} ml of milk'.format(int(milk)))
 
     def is_ready(self):
         self.ready = True

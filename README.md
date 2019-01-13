@@ -73,3 +73,4 @@ does not need to manually control the state of each of its components.
 * refactor CoffeeMachine.is_ready and .update methods
 * load compontents params and config in superclass
 * define exceptions
+* add fancy visualizations when brewing coffee

@@ -79,5 +79,28 @@ class TestCoffeeGrinderComponent(unittest.TestCase):
         self.assertIsNot(self.m.grinder.owner, {})
 
 
+class TestDregsContainerComponent(unittest.TestCase):
+
+    def setUp(self):
+        self.m = CoffeeMachine()
+
+    def test_grinder(self):
+        self.assertIsInstance(self.m.dregs, components.DregsContainer)
+
+    def test_grinder_ready(self):
+        self.assertTrue(self.m.dregs.is_ready())
+
+    def test_grinder_level(self):
+        exceeding_amount = self.m.dregs.volume + 1
+        with self.assertRaises(ValueError):
+            self.m.dregs.store(exceeding_amount)
+
+    @mock.patch('coffee_machine.machine.CoffeeMachine')
+    def test_grinder_notification(self, mock_coffee_machine):
+        self.m.dregs.owner = mock_coffee_machine
+        self.m.dregs.store(self.m.dregs.level)
+        self.assertIsNot(self.m.dregs.owner, {})
+
+
 if __name__ == '__main__':
     unittest.main()

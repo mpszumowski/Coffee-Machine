@@ -85,8 +85,6 @@ class WaterTank(RefillableContainer, CoffeeMachineComponent):
         print('Watertank refilled')
 
     def get_water(self, amount):
-        if self.level < amount:
-            raise WaterTankException("The water tank is empty!")
         super().subtract(amount)
         self.health()
         return amount

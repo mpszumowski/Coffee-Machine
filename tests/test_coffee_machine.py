@@ -35,106 +35,129 @@ class TestPrograms(unittest.TestCase):
 class TestWaterTankComponent(unittest.TestCase):
 
     def setUp(self):
-        self.m = CoffeeMachine()
+        patcher = mock.patch('coffee_machine.machine.CoffeeMachine')
+        self.addCleanup(patcher.stop)
+        self.mock_coffee_machine = patcher.start()
 
     def test_water_tank(self):
-        self.assertIsInstance(self.m.water_supply, components.WaterTank)
+        water_supply = components.WaterTank(self.mock_coffee_machine.result_value)
+        self.assertIsInstance(water_supply, components.WaterTank)
 
     def test_water_tank_ready(self):
-        self.assertFalse(self.m.water_supply.is_ready())
-        self.m.water_supply.refill()
-        self.assertTrue(self.m.water_supply.is_ready())
+        water_supply = components.WaterTank(self.mock_coffee_machine.result_value)
+        self.assertFalse(water_supply.is_ready())
+        water_supply.refill()
+        self.assertTrue(water_supply.is_ready())
 
     def test_water_tank_level(self):
-        self.m.water_supply.refill()
+        water_supply = components.WaterTank(self.mock_coffee_machine.result_value)
+        water_supply.refill()
         with self.assertRaises(ValueError):
-            exceeding_amount = self.m.water_supply.level + 1
-            self.m.water_supply.get_water(exceeding_amount)
+            exceeding_amount = water_supply.level + 1
+            water_supply.get_water(exceeding_amount)
 
-    @mock.patch('coffee_machine.machine.CoffeeMachine')
-    def test_water_tank_notification(self, mock_coffee_machine):
-        self.m.water_supply.owner = mock_coffee_machine
-        self.m.water_supply.get_water(self.m.water_supply.level)
-        self.assertIsNot(self.m.water_supply.owner, {})
+    def test_water_tank_notification(self):
+        water_supply = components.WaterTank(self.mock_coffee_machine.result_value)
+        water_supply.owner.notifications = {}
+        water_supply.get_water(water_supply.level)
+        self.assertIsNot(water_supply.owner.notifications, {})
 
 
 class TestCoffeeGrinderComponent(unittest.TestCase):
 
     def setUp(self):
-        self.m = CoffeeMachine()
+        patcher = mock.patch('coffee_machine.machine.CoffeeMachine')
+        self.addCleanup(patcher.stop)
+        self.mock_coffee_machine = patcher.start()
 
     def test_grinder(self):
-        self.assertIsInstance(self.m.grinder, components.CoffeeGrinder)
+        grinder = components.CoffeeGrinder(self.mock_coffee_machine)
+        self.assertIsInstance(grinder, components.CoffeeGrinder)
 
     def test_grinder_ready(self):
-        self.assertFalse(self.m.grinder.is_ready())
-        self.m.grinder.refill()
-        self.assertTrue(self.m.grinder.is_ready())
+        grinder = components.CoffeeGrinder(self.mock_coffee_machine)
+        self.assertFalse(grinder.is_ready())
+        grinder.refill()
+        self.assertTrue(grinder.is_ready())
 
     def test_grinder_level(self):
-        self.m.grinder.refill()
+        grinder = components.CoffeeGrinder(self.mock_coffee_machine)
+        grinder.refill()
         with self.assertRaises(ValueError):
-            exceeding_amount = self.m.grinder.level + 1
-            self.m.grinder.grind(exceeding_amount)
+            exceeding_amount = grinder.level + 1
+            grinder.grind(exceeding_amount)
 
-    @mock.patch('coffee_machine.machine.CoffeeMachine')
-    def test_grinder_notification(self, mock_coffee_machine):
-        self.m.grinder.owner = mock_coffee_machine
-        self.m.grinder.grind(self.m.grinder.level)
-        self.assertIsNot(self.m.grinder.owner, {})
+    def test_grinder_notification(self):
+        grinder = components.CoffeeGrinder(self.mock_coffee_machine)
+        grinder.owner.notifications = {}
+        grinder.grind(grinder.level)
+        self.assertIsNot(grinder.owner, {})
 
 
 class TestDregsContainerComponent(unittest.TestCase):
 
     def setUp(self):
-        self.m = CoffeeMachine()
+        patcher = mock.patch('coffee_machine.machine.CoffeeMachine')
+        self.addCleanup(patcher.stop)
+        self.mock_coffee_machine = patcher.start()
 
     def test_grinder(self):
-        self.assertIsInstance(self.m.dregs, components.DregsContainer)
+        dregs = components.DregsContainer(self.mock_coffee_machine.result_value)
+        self.assertIsInstance(dregs, components.DregsContainer)
 
     def test_grinder_ready(self):
-        self.assertTrue(self.m.dregs.is_ready())
+        dregs = components.DregsContainer(self.mock_coffee_machine.result_value)
+        self.assertTrue(dregs.is_ready())
 
     def test_grinder_level(self):
-        exceeding_amount = self.m.dregs.volume + 1
+        dregs = components.DregsContainer(self.mock_coffee_machine.result_value)
+        exceeding_amount = dregs.volume + 1
         with self.assertRaises(ValueError):
-            self.m.dregs.store(exceeding_amount)
+            dregs.store(exceeding_amount)
 
-    @mock.patch('coffee_machine.machine.CoffeeMachine')
-    def test_grinder_notification(self, mock_coffee_machine):
-        self.m.dregs.owner = mock_coffee_machine
-        self.m.dregs.store(self.m.dregs.level)
-        self.assertIsNot(self.m.dregs.owner, {})
+    def test_grinder_notification(self):
+        dregs = components.DregsContainer(self.mock_coffee_machine.result_value)
+        dregs.owner.notifications = {}
+        dregs.store(dregs.level)
+        self.assertIsNot(dregs.owner, {})
 
 
 class TestBrewer(unittest.TestCase):
 
     def setUp(self):
-        self.m = CoffeeMachine()
+        patcher = mock.patch('coffee_machine.machine.CoffeeMachine')
+        self.addCleanup(patcher.stop)
+        self.mock_coffee_machine = patcher.start()
 
     def test_brewer_ready(self):
-        self.assertTrue(self.m.brewer.is_ready())
+        brewer = components.Brewer(self.mock_coffee_machine.result_value)
+        self.assertTrue(brewer.is_ready())
 
     def test_brewer_extraction(self):
+        brewer = components.Brewer(self.mock_coffee_machine.result_value)
         coffee_amount = 30
         water_amount = 60
-        self.assertEqual(self.m.brewer.extract_coffee(coffee_amount, water_amount), water_amount)
+        self.assertEqual(brewer.extract_coffee(coffee_amount, water_amount), water_amount)
 
 
 class TestMilkPump(unittest.TestCase):
 
     def setUp(self):
-        self.m = CoffeeMachine()
+        patcher = mock.patch('coffee_machine.machine.CoffeeMachine')
+        self.addCleanup(patcher.stop)
+        self.mock_coffee_machine = patcher.start()
 
     def test_milk_supply_ready(self):
-        self.assertFalse(self.m.milk_pump.is_ready())
-        self.m.milk_pump.supply_milk()
-        self.assertTrue(self.m.milk_pump.is_ready())
+        milk_pump = components.MilkPump(self.mock_coffee_machine)
+        self.assertFalse(milk_pump.is_ready())
+        milk_pump.supply_milk()
+        self.assertTrue(milk_pump.is_ready())
 
     def test_get_milk(self):
+        milk_pump = components.MilkPump(self.mock_coffee_machine)
         milk = 60
-        self.m.milk_pump.supply_milk()
-        self.assertEqual(self.m.milk_pump.get_milk(milk), milk)
+        milk_pump.supply_milk()
+        self.assertEqual(milk_pump.get_milk(milk), milk)
 
 
 if __name__ == '__main__':

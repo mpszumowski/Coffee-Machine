@@ -102,5 +102,19 @@ class TestDregsContainerComponent(unittest.TestCase):
         self.assertIsNot(self.m.dregs.owner, {})
 
 
+class TestBrewer(unittest.TestCase):
+
+    def setUp(self):
+        self.m = CoffeeMachine()
+
+    def test_brewer_ready(self):
+        self.assertTrue(self.m.brewer.is_ready())
+
+    def test_brewer_extraction(self):
+        coffee_amount = 30
+        water_amount = 60
+        self.assertEqual(self.m.brewer.extract_coffee(coffee_amount, water_amount), water_amount)
+
+
 if __name__ == '__main__':
     unittest.main()

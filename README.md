@@ -67,7 +67,6 @@ does not need to manually control the state of each of its components.
 
 ## TODOS
 
-* more tests
 * create AbcCoffeeMachine interface
 * add typing
 * refactor CoffeeMachine.is_ready and .update methods

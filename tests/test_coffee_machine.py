@@ -1,10 +1,9 @@
 import unittest
 from unittest import mock
-from inspect import getmembers, isclass, isabstract
 
-from coffee_machine.machine import CoffeeMachine
-from coffee_machine import components
 from coffee_machine import coffees
+from coffee_machine import components
+from coffee_machine.machine import CoffeeMachine
 
 
 class TestInitialization(unittest.TestCase):

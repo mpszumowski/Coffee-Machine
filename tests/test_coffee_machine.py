@@ -26,6 +26,12 @@ class TestPrograms(unittest.TestCase):
             program = Program()
             self.assertIsInstance(program._coffee, coffees.ingredients.Coffee)
 
+    def test_prepare_coffee(self):
+        for Program in self.m.coffee_programs.values():
+            program = Program()
+            with self.assertRaises(ValueError):
+                self.m.prepare(type(program).__name__)
+
 
 class TestWaterTankComponent(unittest.TestCase):
 

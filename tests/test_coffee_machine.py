@@ -27,7 +27,7 @@ class TestPrograms(unittest.TestCase):
             self.assertIsInstance(program._coffee, coffees.ingredients.Coffee)
 
 
-class TestComponents(unittest.TestCase):
+class TestWaterTankComponent(unittest.TestCase):
 
     def setUp(self):
         self.m = CoffeeMachine()
@@ -52,6 +52,12 @@ class TestComponents(unittest.TestCase):
         self.m.water_supply.get_water(self.m.water_supply.level)
         self.assertIsNot(self.m.water_supply.owner, {})
 
+
+class TestCoffeeGrinderComponent(unittest.TestCase):
+
+    def setUp(self):
+        self.m = CoffeeMachine()
+
     def test_grinder(self):
         self.assertIsInstance(self.m.grinder, components.CoffeeGrinder)
 
@@ -71,7 +77,6 @@ class TestComponents(unittest.TestCase):
         self.m.grinder.owner = mock_coffee_machine
         self.m.grinder.grind(self.m.grinder.level)
         self.assertIsNot(self.m.grinder.owner, {})
-
 
 
 if __name__ == '__main__':

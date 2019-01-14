@@ -116,5 +116,21 @@ class TestBrewer(unittest.TestCase):
         self.assertEqual(self.m.brewer.extract_coffee(coffee_amount, water_amount), water_amount)
 
 
+class TestMilkPump(unittest.TestCase):
+
+    def setUp(self):
+        self.m = CoffeeMachine()
+
+    def test_milk_supply_ready(self):
+        self.assertFalse(self.m.milk_pump.is_ready())
+        self.m.milk_pump.supply_milk()
+        self.assertTrue(self.m.milk_pump.is_ready())
+
+    def test_get_milk(self):
+        milk = 60
+        self.m.milk_pump.supply_milk()
+        self.assertEqual(self.m.milk_pump.get_milk(milk), milk)
+
+
 if __name__ == '__main__':
     unittest.main()

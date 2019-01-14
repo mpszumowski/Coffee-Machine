@@ -52,6 +52,27 @@ class TestComponents(unittest.TestCase):
         self.m.water_supply.get_water(self.m.water_supply.level)
         self.assertIsNot(self.m.water_supply.owner, {})
 
+    def test_grinder(self):
+        self.assertIsInstance(self.m.grinder, components.CoffeeGrinder)
+
+    def test_grinder_ready(self):
+        self.assertFalse(self.m.grinder.is_ready())
+        self.m.grinder.refill()
+        self.assertTrue(self.m.grinder.is_ready())
+
+    def test_grinder_level(self):
+        self.m.grinder.refill()
+        with self.assertRaises(ValueError):
+            exceeding_amount = self.m.grinder.level + 1
+            self.m.grinder.grind(exceeding_amount)
+
+    @mock.patch('coffee_machine.machine.CoffeeMachine')
+    def test_grinder_notification(self, mock_coffee_machine):
+        self.m.grinder.owner = mock_coffee_machine
+        self.m.grinder.grind(self.m.grinder.level)
+        self.assertIsNot(self.m.grinder.owner, {})
+
+
 
 if __name__ == '__main__':
     unittest.main()
